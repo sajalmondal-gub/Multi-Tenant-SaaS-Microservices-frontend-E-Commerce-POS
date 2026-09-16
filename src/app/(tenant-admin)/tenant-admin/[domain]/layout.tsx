@@ -14,7 +14,8 @@ import {
   Search,
   Menu,
   Leaf,
-  Calculator
+  Calculator,
+  Truck
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -35,6 +36,7 @@ export default function TenantAdminLayout({
     { name: "POS", href: `/pos`, icon: Calculator },
     { name: "Orders", href: `/orders`, icon: ShoppingCart },
     { name: "Products", href: `/products`, icon: Package },
+    { name: "Purchase", href: `/purchase`, icon: Truck },
     { name: "Customers", href: `/customers`, icon: Users },
     { name: "Settings", href: `/settings`, icon: Settings },
   ];
