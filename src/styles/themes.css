@@ -1,0 +1,9 @@
+.theme-default {
+  --primary: #2563eb;
+  --secondary: #4f46e5;
+}
+
+.theme-dark {
+  --primary: #3b82f6;
+  --secondary: #6366f1;
+}

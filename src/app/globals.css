@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+@theme {
+  --color-tenant-primary: var(--tenant-primary);
+  --color-tenant-primary-foreground: var(--tenant-primary-foreground);
+  --color-tenant-secondary: var(--tenant-secondary);
+  --color-tenant-secondary-foreground: var(--tenant-secondary-foreground);
+  --color-tenant-accent: var(--tenant-accent);
+  --color-tenant-accent-foreground: var(--tenant-accent-foreground);
+  --color-tenant-bg: var(--tenant-bg);
+  --color-tenant-surface: var(--tenant-surface);
+  --color-tenant-text: var(--tenant-text);
+  --color-tenant-muted: var(--tenant-muted);
+}
+
+/* BULLETPROOF FALLBACKS: Guarantees UI visibility even if Tailwind v4 caching fails */
+.bg-tenant-bg { background-color: var(--color-tenant-bg, var(--tenant-bg, #ffffff)) !important; }
+.text-tenant-text { color: var(--color-tenant-text, var(--tenant-text, #0f172a)) !important; }
+.bg-tenant-primary { background-color: var(--color-tenant-primary, var(--tenant-primary, #10b981)) !important; }
+.text-tenant-primary { color: var(--color-tenant-primary, var(--tenant-primary, #10b981)) !important; }
+.bg-tenant-secondary { background-color: var(--color-tenant-secondary, var(--tenant-secondary, #f0fdf4)) !important; }
+.text-tenant-muted { color: var(--color-tenant-muted, var(--tenant-muted, #64748b)) !important; }
+.text-tenant-primary-foreground { color: var(--color-tenant-primary-foreground, #ffffff) !important; }
+.bg-tenant-accent { background-color: var(--color-tenant-accent, #f59e0b) !important; }
+.text-tenant-accent-foreground { color: var(--color-tenant-accent-foreground, #ffffff) !important; }
