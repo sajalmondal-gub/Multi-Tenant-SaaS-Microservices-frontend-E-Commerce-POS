@@ -39,6 +39,16 @@ export default function TenantAdminLayout({
     { name: "Settings", href: `/settings`, icon: Settings },
   ];
 
+  if (pathname?.endsWith('/pos')) {
+    return (
+      <TenantThemeProvider>
+        <main className="h-screen w-screen bg-tenant-bg overflow-hidden font-sans">
+          {children}
+        </main>
+      </TenantThemeProvider>
+    );
+  }
+
   return (
     <TenantThemeProvider>
       <div className="flex h-screen bg-tenant-bg font-sans overflow-hidden">
