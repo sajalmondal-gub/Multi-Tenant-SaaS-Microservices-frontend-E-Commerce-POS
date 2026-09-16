@@ -13,7 +13,8 @@ import {
   LogOut,
   Search,
   Menu,
-  Leaf
+  Leaf,
+  Calculator
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -23,13 +24,15 @@ export default function TenantAdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // Mobile
+  const [desktopSidebarCollapsed, setDesktopSidebarCollapsed] = useState(false); // Desktop
   const params = useParams();
   const domain = params?.domain as string || "demo.com";
   const pathname = usePathname();
 
   const navigation = [
     { name: "Dashboard", href: `/`, icon: LayoutDashboard },
+    { name: "POS", href: `/pos`, icon: Calculator },
     { name: "Orders", href: `/orders`, icon: ShoppingCart },
     { name: "Products", href: `/products`, icon: Package },
     { name: "Customers", href: `/customers`, icon: Users },
@@ -51,17 +54,18 @@ export default function TenantAdminLayout({
         {/* Sidebar */}
         <aside 
           className={cn(
-            "fixed inset-y-0 left-0 z-50 w-72 bg-tenant-secondary border-r border-tenant-muted/10 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 flex flex-col",
-            sidebarOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"
+            "fixed inset-y-0 left-0 z-50 bg-tenant-secondary border-r border-tenant-muted/10 transform transition-all duration-300 ease-in-out lg:relative flex flex-col",
+            sidebarOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full lg:translate-x-0",
+            desktopSidebarCollapsed ? "lg:w-20" : "w-72"
           )}
         >
           {/* Logo */}
-          <div className="h-20 flex items-center px-6 border-b border-tenant-muted/10 bg-tenant-secondary/50">
-            <Link href={`http://${domain}:3000`} className="flex items-center gap-3 group">
-              <div className="h-10 w-10 rounded-xl bg-tenant-primary flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+          <div className="h-20 flex items-center px-6 border-b border-tenant-muted/10 bg-tenant-secondary/50 overflow-hidden shrink-0">
+            <Link href={`http://${domain}:3000`} className="flex items-center gap-3 group whitespace-nowrap">
+              <div className="h-10 w-10 shrink-0 rounded-xl bg-tenant-primary flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
                 <Leaf className="h-6 w-6 text-tenant-primary-foreground" />
               </div>
-              <div>
+              <div className={cn("transition-opacity duration-200", desktopSidebarCollapsed ? "lg:opacity-0 lg:w-0" : "opacity-100")}>
                 <span className="text-xl font-extrabold tracking-tight text-tenant-text block">
                   Store Admin
                 </span>
@@ -71,7 +75,7 @@ export default function TenantAdminLayout({
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 overflow-y-auto p-4 space-y-2">
+          <nav className="flex-1 overflow-y-auto p-4 space-y-2 overflow-x-hidden">
             {navigation.map((item) => {
               const isActive = pathname === item.href;
               return (
@@ -79,24 +83,36 @@ export default function TenantAdminLayout({
                   key={item.name}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200 group",
+                    "flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200 group whitespace-nowrap",
                     isActive 
                       ? "bg-tenant-primary text-tenant-primary-foreground shadow-md" 
-                      : "text-tenant-text hover:bg-tenant-primary/10 hover:text-tenant-primary"
+                      : "text-tenant-text hover:bg-tenant-primary/10 hover:text-tenant-primary",
+                    desktopSidebarCollapsed ? "lg:px-2 lg:justify-center" : ""
                   )}
+                  title={desktopSidebarCollapsed ? item.name : undefined}
                 >
-                  <item.icon className={cn("h-5 w-5", isActive ? "text-tenant-primary-foreground" : "text-tenant-muted group-hover:text-tenant-primary")} />
-                  {item.name}
+                  <item.icon className={cn("h-5 w-5 shrink-0", isActive ? "text-tenant-primary-foreground" : "text-tenant-muted group-hover:text-tenant-primary")} />
+                  <span className={cn("transition-all duration-200", desktopSidebarCollapsed ? "lg:opacity-0 lg:w-0 lg:hidden" : "opacity-100")}>
+                    {item.name}
+                  </span>
                 </Link>
               );
             })}
           </nav>
 
           {/* User & Logout */}
-          <div className="p-4 border-t border-tenant-muted/10">
-            <button className="flex items-center gap-3 px-4 py-3 w-full rounded-xl font-bold text-tenant-text hover:bg-red-50 hover:text-red-600 transition-colors group">
-              <LogOut className="h-5 w-5 text-tenant-muted group-hover:text-red-600" />
-              Log out
+          <div className="p-4 border-t border-tenant-muted/10 overflow-hidden shrink-0">
+            <button 
+              className={cn(
+                "flex items-center gap-3 px-4 py-3 w-full rounded-xl font-bold text-tenant-text hover:bg-red-50 hover:text-red-600 transition-colors group whitespace-nowrap",
+                desktopSidebarCollapsed ? "lg:px-2 lg:justify-center" : ""
+              )}
+              title={desktopSidebarCollapsed ? "Log out" : undefined}
+            >
+              <LogOut className="h-5 w-5 shrink-0 text-tenant-muted group-hover:text-red-600" />
+              <span className={cn("transition-all duration-200", desktopSidebarCollapsed ? "lg:opacity-0 lg:w-0 lg:hidden" : "opacity-100")}>
+                Log out
+              </span>
             </button>
           </div>
         </aside>
@@ -104,11 +120,21 @@ export default function TenantAdminLayout({
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Top Header */}
-          <header className="h-20 bg-tenant-bg border-b border-tenant-muted/10 flex items-center justify-between px-4 lg:px-8 shrink-0 relative z-10 shadow-sm">
+          <header className="h-20 bg-tenant-bg border-b border-tenant-muted/10 flex items-center justify-between px-4 lg:px-8 shrink-0 relative z-10 shadow-sm transition-all duration-300">
             <div className="flex items-center gap-4">
+              {/* Mobile Menu Toggle */}
               <button 
                 onClick={() => setSidebarOpen(true)}
                 className="lg:hidden p-2 rounded-lg text-tenant-text hover:bg-tenant-secondary transition-colors"
+              >
+                <Menu className="h-6 w-6" />
+              </button>
+
+              {/* Desktop Menu Toggle */}
+              <button 
+                onClick={() => setDesktopSidebarCollapsed(!desktopSidebarCollapsed)}
+                className="hidden lg:block p-2 rounded-lg text-tenant-text hover:bg-tenant-secondary transition-colors"
+                title="Toggle Sidebar"
               >
                 <Menu className="h-6 w-6" />
               </button>
